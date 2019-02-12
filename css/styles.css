@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+body{
+	overflow-x:hidden;
+	background-color: black;
+}
+#dialogVideo{
+	overflow: hidden;
+    position: relative;
+}
+
+#backgroundImageDiv{
+	position: fixed;
+}
+#playVideo{
+    position: fixed; /* or absolute */
+	left: 50%;
+	z-index: -1;
+}
+#legend{
+	position: fixed;
+	left: 0%;
+	bottom: 0%;
+	z-index: 10;
+}
+li{
+	color: black;
+}

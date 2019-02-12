@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Projekt Glina</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="css/jquery-ui.min.css" rel="stylesheet">
+  <link href="css/video-js.css" rel="stylesheet">
+  <!-- Bootstrap core JavaScript -->
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery-ui.min.js"></script>
+  <script src="js/video.js"></script>
+</head>
+
+<body class="body">
+  <div class="lasagne">
+      <div id="legend">
+          <ul>
+            <li style="background-color: rgba(255,0,0,0.6)">Fellowship</li>
+            <li style="background-color: rgba(0, 255, 13, 0.6)">Frodo and Sam</li>
+            <li style="background-color: rgba(25, 0, 255, 0.6)">Merry and Pippin</li>
+            <li style="background-color: rgba(255, 0, 212, 0.6)">Aragorn, Legolas, Gimli, Gandalf</li>
+            <li style="background-color: rgba(0, 255, 221, 0.6)">Aragorn, Legolas, Gimli, Gandalf + Hobbits</li>
+            <li style="background-color: rgba(0, 255, 149, 0.6)">Gandalf and Pippin</li>
+            <li style="background-color: rgba(255, 251, 0, 0.6)">Aragorn, Legolas and Gimli</li>
+          </ul>
+        </div>
+    <div id="backgroundImageDiv">
+      <video id="mapVid">
+        <source id="mapVidSource" type="video/mp4" src="video/mapv2.mp4">
+      </video>
+    </div>
+    <div class="dialog" id="dialogVideo">
+      <video id="videoTag" autoplay muted>
+        <source id="sourceTag" type="video/mp4">
+      </video>
+    </div>
+    <div class="dialog" id="dialogText">
+      <p class="textDescription"></p>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+
+      var _height = $(window).height();
+      var _width = $(window).width();
+      var _currentScrollTop = $(window).scrollTop();
+      var _wasPlayerInitialised = false;
+      var _videoPlaying = false;
+      var _middleFlag = false;
+      
+      var FINAL_SCROLL_IN_MIDDLE = 1;
+
+      //Utworzenie divow
+      onPageLoad();
+      //ustawienie scrolla po pierwszym zaladowaniu strony
+      $(window).scrollTop(FINAL_SCROLL_IN_MIDDLE);
+
+      $(window).scroll(function () {
+        _currentScrollTop = $(window).scrollTop();
+
+        if (_currentScrollTop > FINAL_SCROLL_IN_MIDDLE) {
+          onScrollUp();
+        } else if (_currentScrollTop < FINAL_SCROLL_IN_MIDDLE) {
+          onScrollDown();
+        }
+        $(window).scrollTop(FINAL_SCROLL_IN_MIDDLE);
+      });
+
+      //Funkcje zajmujace sie logiką
+      function showWindows(time) {
+        //Wyswietlanie okienek tylko dla danej klatki
+
+        //initaliseDialogs();
+        if (_wasPlayerInitialised == false) initaliseDialogs();
+        closeDialogs();
+        //switch ktory wyswietla dodatkowe informacje w zalezosci
+        //od tego na ktorej klatce aktualnie jestesmy
+        if (time > 4 && time < 4.5) {
+          if(_middleFlag == false){
+            _middleFlag = true;
+            //pauseVideo();
+          }
+          var text = "Shire";
+          var pathToImg = "img/d.png";
+          var pathToVid = "video/shire.gif";
+          //changeDialogContents(text, pathToImg, pathToVid);
+          //openDialogs();
+        } else if (time > 7.3 && time < 7.6) {
+          //rivendell
+        } else if (time > 8.1 && time < 8.4) {
+          //moria
+        } else if (time > 10 && time < 10.5) {
+          //sarn gebir
+        }else{
+          _middleFlag = false;
+        }
+
+      }
+      function openDialogs() {
+        $(".dialog").dialog("open");
+      }
+
+      function closeDialogs() {
+        $(".dialog").dialog("close");
+        _wasPlayerInitialised = false;
+      }
+
+      function initaliseDialogs() {
+
+        $("#dialogVideo").dialog({
+          position: { my: "left top", at: "left top", of: window },
+          height: 0.7 * _height,
+          width: 0.4 * _width,
+          title: "Scena z filmu"
+        });
+        $("#dialogText").dialog({
+          position: { my: "right bottom", at: "right bottom", of: window },
+          height: 0.3 * _height,
+          width: 0.4 * _width,
+          title: "Opis"
+        });
+        _wasPlayerInitialised = true;
+      }
+
+      function changeDialogContents(text, pathToImg, pathToVid) {
+        $("#sourceTag").attr({
+          src: pathToVid,
+          type: "video/mp4",
+          width: "100%",
+          height: "100%"
+        });
+        $("#dialogText").attr({
+          src: text,
+          type: "video/mp4",
+          width: "100%",
+          height: "100%"
+        });
+      }
+
+      $("#playVideo").on("click", playVideo);
+      $("#mapVid").on("click", playVideo);
+      function playVideo() {
+        console.log("klik");
+        if(_videoPlaying == false){
+          _vid.play();
+          _videoPlaying = true;
+        }
+        else {
+          _vid.pause();
+          _videoPlaying = false;
+        }
+        
+      }
+      function pauseVideo() {
+        _vid.pause();
+        _videoPlaying = false;
+      }
+      var _vid = $('#mapVid')[0];
+      function onScrollUp() {
+        console.log(_vid.currentTime);
+        if (_vid.currentTime < _vid.duration) {
+          _vid.currentTime += 0.1;
+          showWindows(_vid.currentTime);
+        }
+      }
+      function checkVideoFrame(){
+        console.log(_vid.currentTime);
+        showWindows(_vid.currentTime);
+      }
+      setInterval(checkVideoFrame,100);
+
+      function onScrollDown() {
+        console.log(_vid.currentTime);
+        if (_vid.currentTime > 0) {
+          _vid.currentTime -= 0.1;
+          showWindows(_vid.currentTime);
+        }
+      }
+
+      function onPageLoad() {
+        alert("Click on map or scroll with mouse to play");
+        $("#mapVid").css({
+          width: _width,
+          height: _height
+        });
+        $(".lasagne").css({
+          top: 0,
+          left: 0,
+          position: 'absolute',
+          width: _width,
+          height: _height + 2
+        });
+      }
+
+    });
+  </script>
+</body>
+
+</html>

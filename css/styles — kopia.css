@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+body{
+    overflow-x:hidden;
+}
+#frameForward{
+	position: fixed;
+	
+}
+#frameBackward{
+	position: fixed;
+	
+}
